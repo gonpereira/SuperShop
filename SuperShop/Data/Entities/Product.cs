@@ -10,7 +10,8 @@ namespace SuperShop.Data.Entities
 
         //[Key]
         //public int IdProduct { get; set; } //se quisesse que isto fosse chave primaria teria que usar o "[key]" a "DataAnnotations" transformar numa chave primaria
-
+        [Required]
+        [MaxLength(50, ErrorMessage = "The field {0} can contain {1} characters length.")]
         public string Name { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)] //formata isto com duas casas decimais em modo moeda mas em modo edicao não aplica formato nenhum
@@ -20,10 +21,10 @@ namespace SuperShop.Data.Entities
         public string ImageUrl { get; set; }
 
         [Display(Name = "Last Purchase")]
-        public DateTime LastPurchase { get; set; }
+        public DateTime? LastPurchase { get; set; }
 
         [Display(Name = "Last Sale")]
-        public DateTime LastSale { get; set; }
+        public DateTime? LastSale { get; set; }
 
         [Display(Name = "Is Available")]
         public bool IsAvailable { get; set; }
