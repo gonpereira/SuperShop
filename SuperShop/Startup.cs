@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SuperShop.Data;
+using SuperShop.Data.Entities;
 
 namespace SuperShop
 {
@@ -26,6 +27,10 @@ namespace SuperShop
             });
 
             services.AddTransient<SeedDb>();
+
+            services.AddScoped<IRepository, Repository>(); //isto fica smp aqui pq n sabemos quando vamos carregar os produtos
+
+            //services.AddScoped<IRepository, MockRepository>();
 
             services.AddControllersWithViews();
         }

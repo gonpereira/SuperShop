@@ -10,7 +10,6 @@ namespace SuperShop.Data
     {
         private readonly DataContext _context;
 
-
         //construtor
         public Repository(DataContext context)
         {

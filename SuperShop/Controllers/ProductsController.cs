@@ -1,38 +1,51 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SuperShop.Data;
 using SuperShop.Data.Entities;
+using System.Threading.Tasks;
 
 
 namespace SuperShop.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly DataContext _context;
+        //Apos criar o Repositorio...
+        //private readonly DataContext _context;
 
-        public ProductsController(DataContext context)
+        //Apos criar o Repositorio
+        //public ProductsController(DataContext context)
+        //{
+        //    _context = context;
+        //}
+
+        //create a field repository
+        private readonly IRepository _repository;
+
+        //temos de instanciar o repository no startup para o Irepository poder correr
+        public ProductsController(IRepository repository)
         {
-            _context = context;
+            //create a field repository
+            _repository = repository;
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Products.ToListAsync());
+            return View(_repository.GetProducts());
         }
 
         // GET: Products/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
+            //Apos o Repositorio
+            //var product = await _context.Products
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+            var product = _repository.GetProduct(id.Value); //tem de ser value porque se o valor for null e pode ser pelo ? rebenda se for só                                                     id... se for id.value nao rebenta. isto é apenas para o compilador.
             if (product == null)
             {
                 return NotFound();
@@ -56,22 +69,28 @@ namespace SuperShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
+                //apos repository
+                //_context.Add(product);
+                _repository.AddProduct(product);
+                //apos repositorio
+                //await _context.SaveChangesAsync();
+                await _repository.SaveAllAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
         }
 
         // GET: Products/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            //apos repositorio
+            //var product = await _context.Products.FindAsync(id);
+            var product = _repository.GetProduct(id.Value);
             if (product == null)
             {
                 return NotFound();
@@ -94,13 +113,17 @@ namespace SuperShop.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                {   //apos repositorio
+                    //_context.Update(product);
+                    //await _context.SaveChangesAsync();
+
+                    _repository.UpdateProduct(product);
+                    await _repository.SaveAllAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.Id))
+                    //if (!ProductExists(product.Id))
+                    if (!_repository.ProductExists(product.Id))
                     {
                         return NotFound();
                     }
@@ -115,15 +138,17 @@ namespace SuperShop.Controllers
         }
 
         // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
+            //Apos repositorio
+            //var product = await _context.Products
+            //    .FirstOrDefaultAsync(m => m.Id == id);
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var product = _repository.GetProduct(id.Value);
             if (product == null)
             {
                 return NotFound();
@@ -137,15 +162,22 @@ namespace SuperShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
+            //apos repositorio
+            //var product = await _context.Products.FindAsync(id);
+            //_context.Products.Remove(product);
+            //await _context.SaveChangesAsync();
+            var product = _repository.GetProduct(id);
+            _repository.RemoveProduct(product);
+            await _repository.SaveAllAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
-        }
+        //apos repositorio
+        //private bool ProductExists(int id)
+        //{
+
+        //    return _context.Products.Any(e => e.Id == id);
+
+        //}
     }
 }
