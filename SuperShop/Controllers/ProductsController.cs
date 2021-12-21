@@ -19,23 +19,30 @@ namespace SuperShop.Controllers
         //}
 
         //create a field repository
-        private readonly IRepository _repository;
+        //private readonly IRepository _repository;
 
-        //temos de instanciar o repository no startup para o Irepository poder correr
-        public ProductsController(IRepository repository)
+        private readonly IProductRepository _productRepository;
+
+        ////temos de instanciar o repository no startup para o Irepository poder correr
+        //public ProductsController(IRepository repository)
+        public ProductsController(IProductRepository productRepository)
         {
             //create a field repository
-            _repository = repository;
+            //_repository = repository;
+            _productRepository = productRepository;
         }
+
+
 
         // GET: Products
         public IActionResult Index()
         {
-            return View(_repository.GetProducts());
+            //return View(_repository.GetProducts());
+            return View(_productRepository.GetAll());
         }
 
         // GET: Products/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -45,7 +52,9 @@ namespace SuperShop.Controllers
             //Apos o Repositorio
             //var product = await _context.Products
             //    .FirstOrDefaultAsync(m => m.Id == id);
-            var product = _repository.GetProduct(id.Value); //tem de ser value porque se o valor for null e pode ser pelo ? rebenda se for só                                                     id... se for id.value nao rebenta. isto é apenas para o compilador.
+            //var product = _repository.GetProduct(id.Value); //tem de ser value porque se o valor for null e pode ser pelo ? rebenda se for só                                                     id... se for id.value nao rebenta. isto é apenas para o compilador.
+            var product = await _productRepository.GetByIdAsync(id.Value);
+
             if (product == null)
             {
                 return NotFound();
@@ -71,17 +80,21 @@ namespace SuperShop.Controllers
             {
                 //apos repository
                 //_context.Add(product);
-                _repository.AddProduct(product);
+                //_repository.AddProduct(product);
+                await _productRepository.CreateAsync(product);
+
                 //apos repositorio
                 //await _context.SaveChangesAsync();
-                await _repository.SaveAllAsync();
+                //await _repository.SaveAllAsync();
+                
+                
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
         }
 
         // GET: Products/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -90,7 +103,10 @@ namespace SuperShop.Controllers
 
             //apos repositorio
             //var product = await _context.Products.FindAsync(id);
-            var product = _repository.GetProduct(id.Value);
+            //var product = _repository.GetProduct(id.Value);
+
+            var product = await _productRepository.GetByIdAsync(id.Value);
+
             if (product == null)
             {
                 return NotFound();
@@ -117,13 +133,16 @@ namespace SuperShop.Controllers
                     //_context.Update(product);
                     //await _context.SaveChangesAsync();
 
-                    _repository.UpdateProduct(product);
-                    await _repository.SaveAllAsync();
+                    //_repository.UpdateProduct(product);
+                    //await _repository.SaveAllAsync();
+
+                    await _productRepository.UpdateAsync(product);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     //if (!ProductExists(product.Id))
-                    if (!_repository.ProductExists(product.Id))
+                    //if (!_repository.ProductExists(product.Id))
+                    if(!await _productRepository.ExistAsync(product.Id))
                     {
                         return NotFound();
                     }
@@ -138,7 +157,7 @@ namespace SuperShop.Controllers
         }
 
         // GET: Products/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -148,7 +167,9 @@ namespace SuperShop.Controllers
             //var product = await _context.Products
             //    .FirstOrDefaultAsync(m => m.Id == id);
 
-            var product = _repository.GetProduct(id.Value);
+            //var product = _repository.GetProduct(id.Value);
+            var product = await _productRepository.GetByIdAsync(id.Value);
+
             if (product == null)
             {
                 return NotFound();
@@ -166,9 +187,17 @@ namespace SuperShop.Controllers
             //var product = await _context.Products.FindAsync(id);
             //_context.Products.Remove(product);
             //await _context.SaveChangesAsync();
-            var product = _repository.GetProduct(id);
-            _repository.RemoveProduct(product);
-            await _repository.SaveAllAsync();
+
+
+            //var product = _repository.GetProduct(id);
+            //_repository.RemoveProduct(product);
+            //await _repository.SaveAllAsync();
+
+            var product = await _productRepository.GetByIdAsync(id);
+
+            await _productRepository.DeleteAsync(product);
+            
+            
             return RedirectToAction(nameof(Index));
         }
 

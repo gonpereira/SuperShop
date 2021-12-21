@@ -28,7 +28,11 @@ namespace SuperShop
 
             services.AddTransient<SeedDb>();
 
-            services.AddScoped<IRepository, Repository>(); //isto fica smp aqui pq n sabemos quando vamos carregar os produtos
+            //Apos criar o IGenericRepository
+            /*services.AddScoped<IRepository, Repository>();*/ //isto fica smp aqui pq n sabemos quando vamos carregar os produtos
+
+            //passa a ser isto
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             //services.AddScoped<IRepository, MockRepository>();
 
