@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SuperShop.Data;
 using SuperShop.Data.Entities;
+using SuperShop.Helpers;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,14 +24,16 @@ namespace SuperShop.Controllers
         //private readonly IRepository _repository;
 
         private readonly IProductRepository _productRepository;
+        private readonly IUserHelper _userHelper;
 
         ////temos de instanciar o repository no startup para o Irepository poder correr
         //public ProductsController(IRepository repository)
-        public ProductsController(IProductRepository productRepository)
+        public ProductsController(IProductRepository productRepository, IUserHelper userHelper)
         {
             //create a field repository
             //_repository = repository;
             _productRepository = productRepository;
+            _userHelper = userHelper;
         }
 
 
@@ -79,6 +82,8 @@ namespace SuperShop.Controllers
         {
             if (ModelState.IsValid)
             {
+                //TODO: Change to the logged User
+                product.User = await _userHelper.GetUserByEmailAsync("gonfroes@gmail.com");
                 //apos repository
                 //_context.Add(product);
                 //_repository.AddProduct(product);
@@ -130,12 +135,17 @@ namespace SuperShop.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {   //apos repositorio
+                {
+                    //TODO: Change to the logged User
+                    product.User = await _userHelper.GetUserByEmailAsync("gonfroes@gmail.com");
+
+                    //apos repositorio
                     //_context.Update(product);
                     //await _context.SaveChangesAsync();
 
                     //_repository.UpdateProduct(product);
                     //await _repository.SaveAllAsync();
+
 
                     await _productRepository.UpdateAsync(product);
                 }

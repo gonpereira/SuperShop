@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SuperShop.Data;
 using SuperShop.Data.Entities;
+using SuperShop.Helpers;
 
 namespace SuperShop
 {
@@ -21,12 +23,26 @@ namespace SuperShop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddIdentity<User, IdentityRole>(configure =>
+            {
+                configure.User.RequireUniqueEmail = true;
+                configure.Password.RequireDigit = false;
+                configure.Password.RequireLowercase = false;
+                configure.Password.RequireUppercase = false;
+                configure.Password.RequiredUniqueChars = 0;
+                configure.Password.RequireNonAlphanumeric = false;
+                configure.Password.RequiredLength = 6;
+
+            }).AddEntityFrameworkStores<DataContext>(); //é onde ele separa o datacontext do Identity do nosso
+       
             services.AddDbContext<DataContext>(configure =>
             {
                 configure.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             });
 
             services.AddTransient<SeedDb>();
+
+            services.AddScoped<IUserHelper, UserHelper>();
 
             //Apos criar o IGenericRepository
             /*services.AddScoped<IRepository, Repository>();*/ //isto fica smp aqui pq n sabemos quando vamos carregar os produtos
@@ -56,7 +72,7 @@ namespace SuperShop
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
