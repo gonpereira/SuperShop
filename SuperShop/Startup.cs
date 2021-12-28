@@ -43,7 +43,8 @@ namespace SuperShop
             services.AddTransient<SeedDb>();
 
             services.AddScoped<IUserHelper, UserHelper>();
-
+            services.AddScoped<IImageHelper, ImageHelper>();
+            services.AddScoped<IConverterHelper, ConverterHelper>();
             //Apos criar o IGenericRepository
             /*services.AddScoped<IRepository, Repository>();*/ //isto fica smp aqui pq n sabemos quando vamos carregar os produtos
 
