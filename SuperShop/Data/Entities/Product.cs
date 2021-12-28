@@ -33,5 +33,18 @@ namespace SuperShop.Data.Entities
         public double Stock { get; set; }
 
         public User User { get; set; }
+
+        //vamos criar uma propriedade só de leitura e esta propriedade dá o caminho da imagem para aqueles que não vão aceder à base de dados 
+        public string ImageFullPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(ImageUrl))
+                {
+                    return null;
+                }
+                return $@"https://localhost:44384{ImageUrl.Substring(1)}";
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@
 <h1>Lista de Produtos</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-outline-danger">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -17,9 +17,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.LastPurchase)
@@ -46,7 +43,10 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                       <img src="@Url.Content(item.ImageUrl)" alt="Image" style="width:100px; height:150px; max-width:100%; height:auto">
+                    }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LastPurchase)
