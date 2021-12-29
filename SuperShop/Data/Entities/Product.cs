@@ -18,7 +18,8 @@ namespace SuperShop.Data.Entities
         public decimal Price { get; set; }
 
         [Display(Name = "Image")] //como este campo se vai chamar na página da web
-        public string ImageUrl { get; set; }
+        //public string ImageUrl { get; set; }
+        public Guid ImageId { get; set; }
 
         [Display(Name = "Last Purchase")]
         public DateTime? LastPurchase { get; set; }
@@ -35,16 +36,18 @@ namespace SuperShop.Data.Entities
         public User User { get; set; }
 
         //vamos criar uma propriedade só de leitura e esta propriedade dá o caminho da imagem para aqueles que não vão aceder à base de dados 
-        public string ImageFullPath
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(ImageUrl))
-                {
-                    return null;
-                }
-                return $@"https://localhost:44384{ImageUrl.Substring(1)}";
-            }
-        }
+        //public string ImageFullPath
+        //{
+        //    //get
+        //    //{
+        //    //    if (string.IsNullOrEmpty(ImageUrl))
+        //    //    {
+        //    //        return null;
+        //    //    }
+        //    //    return $@"https://supershopgcp.azurewebsites.net{ImageUrl.Substring(1)}";
+        //    //} /*https://supershoparmazenamento.blob.core.windows.net*/
+        //}
+
+        public string ImageFullPath => ImageId == Guid.Empty ? $"https://supershopgcp.azurewebsites.net/images/noimage.png" : $"https://supershoparmazenamento.blob.core.windows.net/products/{ImageId}";
     }
 }
