@@ -6,7 +6,7 @@ namespace SuperShop.Data.Entities
     public class Product:IEntity
     {
 
-        public int Id { get; set; } //detecta que é um id inteiro então cria-o como chave primaria tem de ser ID
+        public int Id { get; set; } //detecta que é um id inteiro então cria-o como chave primaria tem de ser Id apenas! se quiser outra coisa 
 
         //[Key]
         //public int IdProduct { get; set; } //se quisesse que isto fosse chave primaria teria que usar o "[key]" a "DataAnnotations" transformar numa chave primaria

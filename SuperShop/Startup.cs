@@ -36,7 +36,7 @@ namespace SuperShop
             }).AddEntityFrameworkStores<DataContext>(); //é onde ele separa o datacontext do Identity do nosso
        
             services.AddDbContext<DataContext>(configure =>
-            {
+            {   //é aqui que eu digo qual o SQL que vou usar. Neste caso é o SQLServer
                 configure.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             });
 
