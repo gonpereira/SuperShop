@@ -81,6 +81,8 @@ namespace SuperShop.Controllers
 
                     var result = await _userHelper.AddUserAsync(user, model.Password);
 
+                    
+
                     if (result != IdentityResult.Success)
                     {
                         ModelState.AddModelError(string.Empty, "The user couldn't be created.");
