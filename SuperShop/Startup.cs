@@ -52,7 +52,11 @@ namespace SuperShop
             //passa a ser isto
             services.AddScoped<IProductRepository, ProductRepository>();
 
-            //services.AddScoped<IRepository, MockRepository>();
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/NotAuthorized";
+                options.AccessDeniedPath = "/Account/NotAuthorized";
+            });
 
             services.AddControllersWithViews();
         }
@@ -70,11 +74,13 @@ namespace SuperShop
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseStatusCodePagesWithReExecute("/error/{0}"); //Agora temos de configurar no primeiro controlador para ser a partir daí que assume outras páginas
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseAuthentication();
+            app.UseAuthentication();//
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -79,9 +79,9 @@ namespace SuperShop.Controllers
 
                     };
 
-                    var result = await _userHelper.AddUserAsync(user, model.Password);
+                    await _userHelper.AddUserToRoleAsync(user, "Customer"); 
 
-                    
+                    var result = await _userHelper.AddUserAsync(user, model.Password);                    
 
                     if (result != IdentityResult.Success)
                     {
@@ -89,7 +89,7 @@ namespace SuperShop.Controllers
                         return View(model);
                     }
 
-                    await _userHelper.AddUserToRoleAsync(user, "Customer"); //
+               
 
                     var loginViewModel = new LoginViewModel
                     {
@@ -185,6 +185,11 @@ namespace SuperShop.Controllers
             }
 
             return this.View(model);
+        }
+
+        public IActionResult NotAuthorized()
+        {
+            return View();
         }
     }
 }

@@ -59,7 +59,7 @@ namespace SuperShop.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             //Apos o Repositorio
@@ -70,7 +70,7 @@ namespace SuperShop.Controllers
 
             if (product == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             return View(product);
@@ -144,7 +144,7 @@ namespace SuperShop.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             //apos repositorio
@@ -155,7 +155,7 @@ namespace SuperShop.Controllers
 
             if (product == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
             
             var model = _converterHelper.ToProductViewModel(product); 
@@ -244,7 +244,7 @@ namespace SuperShop.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
             //Apos repositorio
             //var product = await _context.Products
@@ -255,7 +255,7 @@ namespace SuperShop.Controllers
 
             if (product == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             return View(product);
@@ -291,5 +291,10 @@ namespace SuperShop.Controllers
         //    return _context.Products.Any(e => e.Id == id);
 
         //}
+
+        public IActionResult ProductNotFound()
+        {
+            return View();
+        }
     }
 }
