@@ -77,11 +77,9 @@ namespace SuperShop.Controllers
                         Email = model.Username,
                         UserName = model.Username,
 
-                    };
+                    };                                    
 
-                    await _userHelper.AddUserToRoleAsync(user, "Customer"); 
-
-                    var result = await _userHelper.AddUserAsync(user, model.Password);                    
+                    var result = await _userHelper.AddUserAsync(user, model.Password);                   
 
                     if (result != IdentityResult.Success)
                     {
@@ -89,7 +87,8 @@ namespace SuperShop.Controllers
                         return View(model);
                     }
 
-               
+                    await _userHelper.AddUserToRoleAsync(user, "Customer");
+
 
                     var loginViewModel = new LoginViewModel
                     {
