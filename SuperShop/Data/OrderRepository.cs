@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SuperShop.Data
 {
-    public class OrderRepository : GenericRepository<Order>, IOrderRepository //temos de colocar este porque o Dependecy Injection na instancia Genericos
+    public class OrderRepository : GenericRepository<Order>, IOrderRepository //temos de colocar este porque o Dependecy Injection nao instancia Genericos
     {
         private readonly DataContext _context;
         private readonly IUserHelper _userHelper;
@@ -55,6 +55,46 @@ namespace SuperShop.Data
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> ConfirmOrderAsync(string userName)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(userName);
+            if(user == null)
+            {
+                return false;
+            }
+
+            var orderTemps = await _context.OrderDetailTemps.Include(o => o.Product).Where(o => o.User == user).ToListAsync(); 
+            if(orderTemps == null || orderTemps.Count == 0)
+            {
+                return false;
+            }
+
+            var details = orderTemps.Select(o => new OrderDetail
+            {
+                Price = o.Price,
+                Product = o.Product,
+                Quantity = o.Quantity,
+
+            }).ToList();
+
+            var order = new Order
+            {
+                OrderDate = System.DateTime.UtcNow,
+                User = user,
+                Items = details,
+
+            };
+
+            await CreateAsync(order); //este dá para ir buscar ao genérico
+
+            _context.OrderDetailTemps.RemoveRange(orderTemps); //o details como herda do Order temos de ir buscar ao _context...
+
+            await _context.SaveChangesAsync();
+
+            return true;
+            
+        }
+
         public async Task DeleteDetailTempAsync(int id)
         {
             var orderDetailTemp = await _context.OrderDetailTemps.FindAsync(id);
@@ -88,10 +128,18 @@ namespace SuperShop.Data
 
             if(await _userHelper.IsUserInRoleAsync(user, "Admin"))
             {
-                return _context.Orders.Include(o => o.Items).ThenInclude(p => p.Product).OrderByDescending(o => o.OrderDate);
+                return _context.Orders
+                    .Include(o => o.User)
+                    .Include(o => o.Items)
+                    .ThenInclude(p => p.Product)
+                    .OrderByDescending(o => o.OrderDate);
             }
 
-            return _context.Orders.Include(o => o.Items).ThenInclude(p => p.Product).Where(o => o.User == user).OrderByDescending(o => o.OrderDate);
+            return _context.Orders
+                .Include(o => o.Items)
+                .ThenInclude(p => p.Product)
+                .Where(o => o.User == user)
+                .OrderByDescending(o => o.OrderDate);
 
         }
 
