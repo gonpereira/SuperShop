@@ -10,11 +10,11 @@ namespace SuperShop.Data.Entities
     {
         public int Id { get; set; }
 
-        [Required, Display(Name = "Order Date"), DisplayFormat(DataFormatString ="{0:yyyy/MM/dd hh:mm tt}", ApplyFormatInEditMode = false)]
+        [Required, Display(Name = "Order Date"), DisplayFormat(DataFormatString ="{0:yyyy/MM/dd}", ApplyFormatInEditMode = false)]
         public DateTime OrderDate { get; set; }
 
-        [Required, Display(Name = "Delivery Date"), DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}", ApplyFormatInEditMode = false)]
-        public DateTime DeliveryDate { get; set; }
+        [Display(Name = "Delivery Date"), DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = false)]
+        public DateTime? DeliveryDate { get; set; }
 
         [Required]
         public User User { get; set; }
@@ -30,7 +30,7 @@ namespace SuperShop.Data.Entities
         [DisplayFormat(DataFormatString = "{0:C2}")]
         public decimal Value => Items == null ? 0 : Items.Sum(i => i.Value);
 
-        [Display(Name = "Order Date"), DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}", ApplyFormatInEditMode = false)]
+        [Display(Name = "Order Date"), DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = false)]
         public DateTime? OrderDateLocal => OrderDate.ToLocalTime();
 
         

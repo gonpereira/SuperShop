@@ -77,7 +77,6 @@ namespace SuperShop.Controllers
         }
 
         // GET: Products/Create
-        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -262,6 +261,7 @@ namespace SuperShop.Controllers
         }
 
         // POST: Products/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -278,10 +278,22 @@ namespace SuperShop.Controllers
 
             var product = await _productRepository.GetByIdAsync(id);
 
-            await _productRepository.DeleteAsync(product);
-            
-            
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _productRepository.DeleteAsync(product);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                if(ex is DbUpdateException) //(ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+                {
+                    ViewBag.ErrorTitle = $"Problably the item {product.Name} is in use... ";
+                    ViewBag.ErrorMessage = $"</br></br>{product.Name} cant be delete! There are orders with that item included! </br>";
+                }           
+
+                return View("Error");
+            }                                 
+
         }
 
         //apos repositorio

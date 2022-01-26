@@ -26,9 +26,30 @@ namespace SuperShop.Data
 
         public DbSet<OrderDetailTemp> OrderDetailTemps { get; set; }
 
+        public DbSet<Country> Countries { get; set; }
+
+        public DbSet<City> Cities { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 
         }
+
+        //Habilitar a regra de apagar em Cascata (Delete in Cascade Rule)
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder) //como está a herdar do DBcontext, fazemos um override do método em q ele cria o modelo
+        //{
+        //    var cascadeFKs = modelBuilder.Model
+        //        .GetEntityTypes()
+        //        .SelectMany(t => t.GetForeignKeys())
+        //        .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
+
+        //    foreach (var fk in cascadeFKs)
+        //    {
+        //        fk.DeleteBehavior = DeleteBehavior.Restrict;
+        //    }
+
+        //    base.OnModelCreating(modelBuilder);
+        //}
     }
 }

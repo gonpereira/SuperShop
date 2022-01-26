@@ -33,6 +33,23 @@ namespace SuperShop.Data
             await _userHelper.CheckRoleAsync("Admin");
             await _userHelper.CheckRoleAsync("Customer");
 
+            if (!_context.Countries.Any())
+            {
+                var cities = new List<City>();
+
+                cities.Add(new City { Name = "Lisboa" });
+                cities.Add(new City { Name = "Porto" });
+                cities.Add(new City { Name = "Faro" });
+
+                _context.Countries.Add(new Country
+                {
+                    Cities = cities,
+                    Name = "Portugal"
+                });
+
+                await _context.SaveChangesAsync();
+            }
+
             var user = await _userHelper.GetUserByEmailAsync("gonfroes@gmail.com");
 
             if (user == null)
@@ -43,7 +60,11 @@ namespace SuperShop.Data
                     LastName = "Pereira",
                     Email = "gonfroes@gmail.com",
                     UserName = "gonfroes@gmail.com",
-                    PhoneNumber = "214832033"
+                    PhoneNumber = "214832033",
+                    Address = "Rua Jau 33",
+                    CityId = 1, //_context.Countries.FirstOrDefault().Cities.FirstOrDefault().Id,
+                    City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault()
+                    
                 };
 
                 var result = await _userHelper.AddUserAsync(user, "123456");
