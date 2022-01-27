@@ -25,8 +25,11 @@ namespace SuperShop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Web Authen.
             services.AddIdentity<User, IdentityRole>(configure =>
             {
+                configure.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+                configure.SignIn.RequireConfirmedEmail = true;
                 configure.User.RequireUniqueEmail = true;
                 configure.Password.RequireDigit = false;
                 configure.Password.RequireLowercase = false;
@@ -35,8 +38,12 @@ namespace SuperShop
                 configure.Password.RequireNonAlphanumeric = false;
                 configure.Password.RequiredLength = 6;
 
-            }).AddEntityFrameworkStores<DataContext>(); //é onde ele separa o datacontext do Identity do nosso
 
+            })
+              .AddDefaultTokenProviders()
+              .AddEntityFrameworkStores<DataContext>(); //é onde ele separa o datacontext do Identity do nosso
+
+            //API Authen.
             services.AddAuthentication()
                 .AddCookie()
                 .AddJwtBearer(cfg =>
@@ -60,6 +67,7 @@ namespace SuperShop
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IBlobHelper, BlobHelper>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddScoped<IMailHelper, MailHelper>();
             
             //Apos criar o IGenericRepository
             /*services.AddScoped<IRepository, Repository>();*/ //isto fica smp aqui pq n sabemos quando vamos carregar os produtos
