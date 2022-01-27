@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using SuperShop.Data.Entities;
 using SuperShop.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -48,11 +50,59 @@ namespace SuperShop.Data
             return await _context.Cities.FindAsync(id);
         }
 
+        public IEnumerable<SelectListItem> GetComboCities(int countryID)
+        {
+            var country = _context.Countries.Find(countryID);
+            var list = new List<SelectListItem>();
+
+            if( country != null)
+            {
+                list = _context.Cities.Select(c => new SelectListItem //por cada city q ele lá encontre vai preencher com o texto...
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+                }).OrderBy(c => c.Text).ToList();
+
+                list.Insert(0, new SelectListItem
+                {
+                    Text = "(Select a city...",
+                    Value = "0"
+                });
+            }            
+
+            return list;
+        }
+
+        public IEnumerable<SelectListItem> GetComboCountries()
+        {        
+
+            var list = _context.Countries.Select(c => new SelectListItem //por cada country q ele lá encontre vai preencher com o texto...
+            {
+                Text = c.Name,
+                Value = c.Id.ToString()
+            }).OrderBy(c => c.Text).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a country...",
+                Value = "0"
+            });
+
+            return list;
+        }
+
         public IQueryable GetCountriesWithCities()
         {
             return _context.Countries
                 .Include(c => c.Cities)
                 .OrderBy(c => c.Name);
+        }
+
+        public async Task<Country> GetCountryAsync(City city) //recebe uma cidade
+        {
+            return await _context.Countries //vai aos paises
+                .Where(c => c.Cities.Any(ci => ci.Id == city.Id))  //e procura um país que nas cidades tenha o mm ID 
+                .FirstOrDefaultAsync(); //devolve logo o primeiro país a q pertence aquela cidade
         }
 
         public async Task<Country> GetCountryWithCitiesAsync(int id)
