@@ -5,9 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using SuperShop.Data;
 using SuperShop.Data.Entities;
 using SuperShop.Helpers;
+using System.Text;
 
 namespace SuperShop
 {
@@ -34,6 +36,19 @@ namespace SuperShop
                 configure.Password.RequiredLength = 6;
 
             }).AddEntityFrameworkStores<DataContext>(); //é onde ele separa o datacontext do Identity do nosso
+
+            services.AddAuthentication()
+                .AddCookie()
+                .AddJwtBearer(cfg =>
+                {
+                    cfg.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = Configuration["Tokens:Issuer"],
+                        ValidAudience = Configuration["Tokens:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
+                    };
+                });
        
             services.AddDbContext<DataContext>(configure =>
             {   //é aqui que eu digo qual o SQL que vou usar. Neste caso é o SQLServer
