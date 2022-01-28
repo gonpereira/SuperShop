@@ -35,19 +35,6 @@ namespace SuperShop.Data.Entities
 
         public User User { get; set; }
 
-        //vamos criar uma propriedade só de leitura e esta propriedade dá o caminho da imagem para aqueles que não vão aceder à base de dados 
-        //public string ImageFullPath
-        //{
-        //    //get
-        //    //{
-        //    //    if (string.IsNullOrEmpty(ImageUrl))
-        //    //    {
-        //    //        return null;
-        //    //    }
-        //    //    return $@"https://supershopgcp.azurewebsites.net{ImageUrl.Substring(1)}";
-        //    //} /*https://supershoparmazenamento.blob.core.windows.net*/
-        //}
-
         public string ImageFullPath => ImageId == Guid.Empty ? $"https://supershopgcp.azurewebsites.net/images/noimage.png" : $"https://supershoparmazenamento.blob.core.windows.net/products/{ImageId}";
     }
 }

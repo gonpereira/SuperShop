@@ -12,8 +12,8 @@ using SuperShop.Data;
 namespace SuperShop.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220125172557_UpdateUserProperties")]
-    partial class UpdateUserProperties
+    [Migration("20220127184425_UpdateUserProperties_and_CountryAndPriceChange")]
+    partial class UpdateUserProperties_and_CountryAndPriceChange
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -194,6 +194,9 @@ namespace SuperShop.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Countries");
                 });

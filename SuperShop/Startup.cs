@@ -10,6 +10,7 @@ using SuperShop.Data;
 using SuperShop.Data.Entities;
 using SuperShop.Helpers;
 using System.Text;
+using Vereyon.Web;
 
 namespace SuperShop
 {
@@ -62,12 +63,15 @@ namespace SuperShop
                 configure.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddFlashMessage(); //Vereyon
+
             services.AddTransient<SeedDb>();
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IBlobHelper, BlobHelper>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
+
             
             //Apos criar o IGenericRepository
             /*services.AddScoped<IRepository, Repository>();*/ //isto fica smp aqui pq n sabemos quando vamos carregar os produtos

@@ -4,7 +4,7 @@
 
 namespace SuperShop.Migrations
 {
-    public partial class UpdateUserProperties : Migration
+    public partial class UpdateUserProperties_and_CountryAndPriceChange : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -43,6 +43,12 @@ namespace SuperShop.Migrations
                 defaultValue: 0);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Countries_Name",
+                table: "Countries",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_CityId",
                 table: "AspNetUsers",
                 column: "CityId");
@@ -61,6 +67,10 @@ namespace SuperShop.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUsers_Cities_CityId",
                 table: "AspNetUsers");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Countries_Name",
+                table: "Countries");
 
             migrationBuilder.DropIndex(
                 name: "IX_AspNetUsers_CityId",
